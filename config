@@ -134,7 +134,7 @@
   (setf *time-modeline-string* "%a %d de %b, %H:%M"
         *screen-mode-line-format* (list
                                    ;; Groups
-                                   "^7@ ^(:fg \"#a88a3c\")%n^7^n"
+                                   "^7@ ^(:fg \"#a88a3c\")%n^7;^n"
                                    ;; Windows
                                    separator
                                    "%W"
