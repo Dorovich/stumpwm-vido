@@ -1,0 +1,15 @@
+#+OPTIONS: \n:t num:nil timestamp:nil
+
+* Mi configuración para StumpWM
+El gestor de ventanas de ventanas centrado en el teclado y escrito completamente en Common Lisp.
+
+#+ATTR_ORG: :width 1000
+[[file:pics/scr1.png]]
+
+** Funcionamiento
+#+BEGIN_QUOTE
+/Si estás cansado de pasar de un tema a otro, zapeando, y de pasar de un administrador de ventanas perfecto excepto por una sola cosa a otro aún más roto de alguna otra manera, entonces tal vez StumpWM pueda ayudar./
+#+END_QUOTE
+~ [[https://stumpwm.github.io/][stumpwm.github.io]]
+
+<En progreso...>
