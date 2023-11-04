@@ -116,8 +116,8 @@
 
 (setf *window-format* "(%n%s) %c"
       *group-format* "%n%s %t"
-      *hidden-window-color* "^(:fg \"#424242\")"
-      *mode-line-highlight-template* "~A") ; antes era "^R~A^r"
+      *hidden-window-color* nil ; "^(:fg \"#424242\")"
+      *mode-line-highlight-template* "^R~A^r") ; antes era "^R~A^r"
 
 ;;; Groups
 
@@ -228,7 +228,7 @@
 ;; con sly:
 ;;   https://www.reddit.com/r/stumpwm/comments/ouuh1c/how_to_connect_sly_to_stumpwm_to_modifying_it_in/
 
-(ql:quickload :slynk)
+(require :slynk)
 
 (defcommand sly-start-server () ()
   "Start a slynk server for sly."
