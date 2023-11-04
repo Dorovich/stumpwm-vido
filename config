@@ -67,6 +67,7 @@
 ;;                          :subfamily "Regular"
 ;;                          :size 14
 ;;                          :antialias t))
+;; ...or normal fonts
 (set-font "-*-fixed-*-r-normal-*-15-120-*-*-*-*-iso8859-*")
 
 ;; Battery and Wifi
@@ -90,7 +91,7 @@
 (setf *mode-line-background-color* *mode-line-bg-color*
       *mode-line-border-color* *mode-line-bg-color*
       *mode-line-foreground-color* *mode-line-fg-color*
-      *mode-line-timeout* 5
+      *mode-line-timeout* 3
       *mode-line-pad-x* 13)
 
 (setf *message-window-gravity* :center
@@ -99,7 +100,7 @@
       *message-window-y-padding* 6
       *maxsize-border-width* 2
       *normal-border-width* 2
-      *transient-border-width* 2
+      *transient-border-width* 0
       stumpwm::*float-window-border* 2
       stumpwm::*float-window-title-height* 2)
 
@@ -116,8 +117,8 @@
 
 (setf *window-format* "(%n) %c"
       *group-format* "%n%s %t"
-      *hidden-window-color* "^5*" ; "^(:fg \"#424242\")"
-      *mode-line-highlight-template* "^R~A^r") ; antes era "^R~A^r"
+      *hidden-window-color* "^**" ; "^(:fg \"#626262\")"
+      *mode-line-highlight-template* "[^5~A^n]") ; antes era "^R~A^r"
 
 ;;; Groups
 
@@ -170,6 +171,11 @@
   (vsplit)
   (move-focus :down))
 
+(defcommand delete-window-and-frame () ()
+  "Delete the current frame with its window."
+  (delete-window)
+  (remove-split))
+
 (defcommand lock () ()
   "Lock the screen, and if suspendp is non-nil, also suspend the system."
   (let ((suspendp (y-or-n-p (format nil "Suspend the system as well? "))))
@@ -190,37 +196,48 @@
 (defcommand hdmi-reset () ()
   (run-shell-command "xrandr --output DP-0 --auto"))
 
+(defcommand term (&optional program) ()
+  "Invoke a terminal, possibly with a @arg{program}."
+  (sb-thread:make-thread (lambda ()
+                           (run-shell-command (if program
+                                                  (format nil "st ~A" program)
+                                                  "st")))))
+
 (defcommand chromium () ()
-  "Start Ungoogled Chromium or switch to it, if it is already running."
-  (run-or-raise "ungoogled-chromium" '(:class "Chromium-browser")))
+  "Start Ungoogled Chromium or switch to it, if it is already running on any group."
+  (sb-thread:make-thread (lambda ()
+                           (run-or-raise "ungoogled-chromium" '(:class "Chromium-browser") t nil))))
 
 (defcommand firefox () ()
-  "Start Firefox or switch to it, if it is already running."
-  (run-or-raise "firefox" '(:class "firefox")))
+  "Start Firefox or switch to it, if it is already running on any group."
+  (sb-thread:make-thread (lambda ()
+                           (run-or-raise "firefox" '(:class "firefox") t nil))))
 
 (defcommand emacsclient () ()
-  "Start the Emacs client or switch to it, if it is already running. If no client is running, a new instance is created."
-  (run-or-raise "emacsclient -a 'emacs' -c" '(:class "Emacs")))
+  "Start the Emacs client or switch to it, if it is already running on any group. If no client is running, a new instance is created."
+  (sb-thread:make-thread (lambda ()
+                           (run-or-raise "emacsclient -a 'emacs' -c" '(:class "Emacs") t nil))))
 
 (defcommand dired () ()
-  "Start Dired on the Emacs client or switch to it, if it is already running. If no client is running, a new instance is created."
-  (run-or-raise "emacsclient -a 'emacs' -c" '(:class "Emacs"))
-  (run-shell-command "emacsclient -e '(dired nil)'"))
+  "Start Dired on the Emacs client or switch to it, if it is already running on any group. If no client is running, a new instance is created."
+  (sb-thread:make-thread (lambda ()
+                           (run-or-raise "emacsclient -a 'emacs' -c" '(:class "Emacs") t nil)
+                           (run-shell-command "emacsclient -e '(dired nil)'"))))
 
 (defcommand steam () ()
   "Start Steam or switch to it, if it is already running on any group."
-  (let ((*run-or-raise-all-groups* t))
-    (run-or-raise "steam" '(:class "steam"))))
+  (sb-thread:make-thread (lambda ()
+                           (run-or-raise "steam" '(:class "steam") t nil))))
 
 (defcommand spotify () ()
   "Start Spotify or switch to it, if it is already running on any group."
-  (let ((*run-or-raise-all-groups* t))
-    (run-or-raise "spotify" '(:class "Spotify"))))
+  (sb-thread:make-thread (lambda ()
+                           (run-or-raise "spotify" '(:class "Spotify") t nil))))
 
 (defcommand discord () ()
   "Start Discord (WebCord) or switch to it, if it is already running on any group."
-  (let ((*run-or-raise-all-groups* t))
-    (run-or-raise "webcord" '(:class "WebCord"))))
+  (sb-thread:make-thread (lambda ()
+                           (run-or-raise "webcord" '(:class "WebCord") t nil))))
 
 ;; Slynk (Swank for Sly)
 ;; parecido, con slime:
@@ -297,7 +314,7 @@
 
 ;; Programs
 (define-key *top-map* (kbd "s-d") "run-shell-command dmenu_run -i -p 'Run:'")
-(define-key *top-map* (kbd "s-RET") "run-shell-command st")
+(define-key *top-map* (kbd "s-RET") "term")
 (define-key *top-map* (kbd "s-b") "firefox")
 (define-key *top-map* (kbd "s-e") "emacsclient")
 (define-key *top-map* (kbd "s-w") "dired")
