@@ -114,9 +114,9 @@
 (setf *run-or-raise-all-groups* nil)
 (setf *startup-message* nil)
 
-(setf *window-format* "(%n%s) %c"
+(setf *window-format* "(%n) %c"
       *group-format* "%n%s %t"
-      *hidden-window-color* nil ; "^(:fg \"#424242\")"
+      *hidden-window-color* "^5*" ; "^(:fg \"#424242\")"
       *mode-line-highlight-template* "^R~A^r") ; antes era "^R~A^r"
 
 ;;; Groups
