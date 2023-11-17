@@ -240,6 +240,11 @@
   (sb-thread:make-thread (lambda ()
                            (run-or-raise "spotify" '(:class "Spotify") t nil))))
 
+(defcommand mail () ()
+  "Start Thunderbird or switch to it, if it is already running on any group."
+  (sb-thread:make-thread (lambda ()
+                           (run-or-raise "thunderbird" '(:class "thunderbird") t nil))))
+
 (defcommand discord () ()
   "Start Discord (WebCord) or switch to it, if it is already running on any group."
   (sb-thread:make-thread (lambda ()
@@ -271,6 +276,11 @@
 (define-key *root-map* (kbd "s") "vsplit-and-focus")
 (define-key *root-map* (kbd "L") "lock")
 (define-key *root-map* (kbd "F") "fullscreen")
+
+(undefine-key *root-map* (kbd "r"))
+(define-key *root-map* (kbd "r") "remove")
+(undefine-key *root-map* (kbd "R"))
+(define-key *root-map* (kbd "R") "iresize")
 
 ;; Windows
 (define-key *top-map* (kbd "s-h") "move-focus left")
