@@ -6,6 +6,9 @@ El gestor de ventanas de ventanas centrado en el teclado y escrito completamente
 #+ATTR_ORG: :width 1000
 [[file:pics/scr1.png]]
 
+#+ATTR_ORG: :width 1000
+[[file:pics/scr2.png]]
+
 ** Funcionamiento
 #+BEGIN_QUOTE
 /Si estás cansado de pasar de un tema a otro, zapeando, y de pasar de un administrador de ventanas perfecto excepto por una sola cosa a otro aún más roto de alguna otra manera, entonces tal vez StumpWM pueda ayudar./
