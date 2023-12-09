@@ -67,7 +67,9 @@
 ;;                          :size 12
 ;;                          :antialias t))
 ;; ...Or normal fonts
-(set-font "-*-fixed-*-r-normal-*-15-120-*-*-*-*-iso8859-*")
+(set-font (if *is-laptop*
+              "-*-fixed-*-r-normal-*-13-120-*-*-*-*-iso8859-*"
+            "-*-fixed-*-r-normal-*-15-120-*-*-*-*-iso8859-*"))
 
 ;; Session commands
 (load-module "end-session")
