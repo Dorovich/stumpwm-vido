@@ -4,9 +4,9 @@
 (in-package :stumpwm)
 
 ;;; Startup Commands
-
 (defvar *first-run* t)
-(defvar *is-laptop* (string= "ness" (run-shell-command "hostname" t)))
+(defvar *is-laptop* (string= "nessnet"
+                             (string-trim '(#\Newline)(run-shell-command "hostname" t))))
 
 (defun setup-commands ()
   (sb-thread:make-thread
@@ -269,7 +269,8 @@
                                    '(:eval
                                      (concatenate 'string
                                       "^(:fg \"#98c379\")"
-                                      (first (cl-ppcre:split " " (run-shell-command "hostname -I" t)))
+                                      (first (cl-ppcre:split " "
+                                              (run-shell-command "hostname -I" t)))
                                       "^n"))
                                    (when *is-laptop* " (%I)")
                                    separator
