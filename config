@@ -408,5 +408,6 @@ If exec is non-nil, the shell command will be run from this function, else it wi
              (kbd "p") (make-script nil "pass")
              (kbd "s") (make-script nil "scrot")
              (kbd "k") (make-script nil "kill")
-             (kbd "l") (make-script nil "steamapp"))
+             (kbd "l") (make-script nil "steamapp")
+             (kbd "q") (make-script nil "quit"))
 (define-key *top-map* (kbd "s-r") *scripts-map*)
