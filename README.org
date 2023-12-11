@@ -4,7 +4,7 @@
 El gestor de ventanas de ventanas centrado en el teclado y escrito completamente en Common Lisp.
 
 #+ATTR_ORG: :width 1000
-[[file:pics/scr1.png]]
+[[file:pics/scr3.png]]
 
 #+ATTR_ORG: :width 1000
 [[file:pics/scr2.png]]

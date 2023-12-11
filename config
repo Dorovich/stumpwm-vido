@@ -413,3 +413,5 @@ If exec is non-nil, the shell command will be run from this function, else it wi
              (kbd "l") (make-script nil "steamapp")
              (kbd "q") (make-script nil "quit"))
 (define-key *top-map* (kbd "s-r") *scripts-map*)
+
+(setf *startup-message* "¡^2StumpWM^n está listo!")
