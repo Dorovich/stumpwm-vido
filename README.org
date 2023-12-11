@@ -4,10 +4,10 @@
 El gestor de ventanas de ventanas centrado en el teclado y escrito completamente en Common Lisp.
 
 #+ATTR_ORG: :width 1000
-[[file:pics/scr3.png]]
+[[file:pics/mk-3.png]]
 
 #+ATTR_ORG: :width 1000
-[[file:pics/scr2.png]]
+[[file:pics/mk-2.png]]
 
 ** Funcionamiento
 #+BEGIN_QUOTE
