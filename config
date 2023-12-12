@@ -106,7 +106,8 @@ If ratio is an integer return the number of pixel desired."
 
 (set-msg-border-width 2)
 (setf *timeout-wait* 5)
-(setf *timeout-frame-indicator-wait* 0)
+(setf *timeout-frame-indicator-wait* 0
+      *suppress-frame-indicator* t)
 (setf *mouse-focus-policy* :click)
 (setf *resize-increment* 30)
 (setf *run-or-raise-all-groups* nil)
