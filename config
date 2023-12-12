@@ -12,6 +12,14 @@
 (defvar *is-laptop* (string= "Ness-net"
                              (string-trim '(#\Newline)(run-shell-command "hostname" t))))
 
+;;; Fixes
+(defun ratio-or-pixel (length ratio) ; redefining this function...
+  "Return a (rounded) ratio of length unless ratio is an integer.
+If ratio is an integer return the number of pixel desired."
+  (if (integerp ratio)
+      ratio
+      (round (* length ratio)))) ; <-- to fix this line
+
 ;;; Theme
 (defparameter color-gold "#baa67f")
 (setf *colors* '("#151515"   ;black
