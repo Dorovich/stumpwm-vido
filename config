@@ -83,6 +83,7 @@
 
 (setf *message-window-gravity* :center
       *window-border-style* :thin
+      *new-window-preferred-frame* '(:empty :focused)
       *message-window-padding* 6
       *message-window-y-padding* 6
       *maxsize-border-width* 2
@@ -99,6 +100,7 @@
 (setf *timeout-wait* 5)
 (setf *timeout-frame-indicator-wait* 0)
 (setf *mouse-focus-policy* :click)
+(setf *resize-increment* 30)
 (setf *run-or-raise-all-groups* nil)
 (setf *startup-message* nil)
 
@@ -159,6 +161,12 @@
 
 (defcommand hdmi-reset () ()
   (run-shell-command "xrandr --output DP-0 --auto"))
+
+(defcommand clean-resize-direction (d)
+  ((:direction "Direction: "))
+  "Resize frame to direction @var{d} without showing frame borders."
+  (resize-direction d)
+  (clear-frame-outlines (current-group)))
 
 (defcommand term (&optional program) ()
   "Invoke a terminal, possibly with a @arg{program}."
@@ -299,11 +307,20 @@
 
 ;;; Hooks
 
-;; (defun float-if-match (window)
-;;   "Makes a new window floating if its class matches."
-;;   (when ()))
+(defparameter *floating-classes* '("Sxiv" "mpv"))
 
-;; (add-hook *new-window-hook* #'float-if-match)
+(defun float-if-match (window)
+  "Makes a new window floating if its class matches."
+  (when (member (window-class window) *floating-classes* :test #'string=)
+    (float-window window (current-group))
+    (let ((w (* (screen-width (current-screen)) 55/96))
+          (h (* (screen-height (current-screen)) 5/6)))
+      (float-window-move-resize window :width w :height h
+                                       :x (- (/ (screen-width (current-screen)) 2) (/ w 2))
+                                       :y (- (/ (screen-height (current-screen)) 2) (/ h 2))))
+    (group-focus-window (current-group) window)))
+
+(add-hook *new-window-hook* #'float-if-match)
 
 ;;; Key mappings
 
@@ -342,10 +359,10 @@ If exec is non-nil, the shell command will be run from this function, else it wi
 (define-key *top-map* (kbd "s-K") "move-window up")
 (define-key *top-map* (kbd "s-L") "move-window right")
 
-(define-key *top-map* (kbd "s-M-h") "resize-direction left")
-(define-key *top-map* (kbd "s-M-j") "resize-direction down")
-(define-key *top-map* (kbd "s-M-k") "resize-direction up")
-(define-key *top-map* (kbd "s-M-l") "resize-direction right")
+(define-key *top-map* (kbd "s-M-h") "clean-resize-direction left")
+(define-key *top-map* (kbd "s-M-j") "clean-resize-direction down")
+(define-key *top-map* (kbd "s-M-k") "clean-resize-direction up")
+(define-key *top-map* (kbd "s-M-l") "clean-resize-direction right")
 
 (define-key *top-map* (kbd "s-c") "pull-hidden-next")
 (define-key *top-map* (kbd "s-n") "fnext")
