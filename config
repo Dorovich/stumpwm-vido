@@ -21,6 +21,18 @@ If ratio is an integer return the number of pixel desired."
       ratio
       (round (* length ratio)))) ; <-- to fix this line
 
+;; Asynchronous modeline redraw
+(defun update-mode-lines (screen)
+  "Update all mode lines on SCREEN"
+  (sb-thread:make-thread (lambda ()
+                           (dolist (mode-line (screen-mode-lines screen))
+                             (redraw-mode-line mode-line)))))
+
+(defun update-all-mode-lines ()
+  "Update all mode lines."
+  (sb-thread:make-thread (lambda ()
+                           (mapc 'redraw-mode-line *mode-lines*))))
+
 ;;; Theme
 (defparameter color-gold "#baa67f")
 (setf *colors* '("#151515"   ;black
