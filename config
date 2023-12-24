@@ -53,13 +53,13 @@ If ratio is an integer return the number of pixel desired."
 (defun update-mode-lines (screen)
   "Update all mode lines on SCREEN"
   (sb-thread:with-mutex (*mode-line-requests-lock*)
-    (nconc *mode-line-requests* (cons screen nil)))
+    (setf *mode-line-requests* (append *mode-line-requests* (cons screen nil))))
   (sb-thread:signal-semaphore *mode-line-semaphore* 1))
 
 (defun update-all-mode-lines ()
   "Update all mode lines."
   (sb-thread:with-mutex (*mode-line-requests-lock*)
-    (nconc *mode-line-requests* (cons -1 nil)))
+    (setf *mode-line-requests* (append *mode-line-requests* (cons -1 nil))))
   (sb-thread:signal-semaphore *mode-line-semaphore* 1))
 
 ;;; Theme
