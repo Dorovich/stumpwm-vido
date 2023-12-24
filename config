@@ -205,9 +205,15 @@ If ratio is an integer return the number of pixel desired."
     (when suspendp (run-shell-command "systemctl suspend")))
 
 (defcommand screenshot () ()
+  "Take a screenshot of the whole monitor."
   (make-script t "scrot" "full")
   (sleep 0.5)
   (message "Screenshot taken!"))
+
+(defcommand smart-fullscreen () ()
+  "Fullscreen the current window, only if there is one."
+  (when (current-window)
+    (fullscreen)))
 
 (defcommand hdmi-side () ()
   (run-shell-command "xrandr --output HDMI-A-0 --auto --right-of DP-0")
@@ -428,7 +434,7 @@ If exec is non-nil, the shell command will be run from this function, else it wi
 (define-key *top-map* (kbd "s-n") "fnext")
 (define-key *top-map* (kbd "s-p") "fprev")
 (define-key *top-map* (kbd "s-v") "windowlist")
-(define-key *top-map* (kbd "s-f") "fullscreen")
+(define-key *top-map* (kbd "s-f") "smart-fullscreen")
 (define-key *top-map* (kbd "s-t") "toggle-floating")
 (define-key *top-map* (kbd "s-x") *exchange-window-map*)
 
