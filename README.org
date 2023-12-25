@@ -7,7 +7,7 @@ El gestor de ventanas de ventanas centrado en el teclado y escrito completamente
 [[file:pics/mk-3.png]]
 
 #+ATTR_ORG: :width 1000
-[[file:pics/mk-2.png]]
+[[file:pics/mk-4.png]]
 
 ** Funcionamiento
 #+BEGIN_QUOTE
