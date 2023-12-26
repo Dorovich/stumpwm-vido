@@ -6,9 +6,11 @@
 
 ;;; Startup Commands
 (when *initializing*
-  (run-shell-command "xsetroot -cursor_name left_ptr")
-  (run-shell-command "setxkbmap -option caps:ctrl_modifier")
-  (run-shell-command "nitrogen --restore"))
+  (sb-thread:make-thread (lambda ()
+                           (run-shell-command "xsetroot -cursor_name left_ptr")
+                           (run-shell-command "setxkbmap -option caps:ctrl_modifier")
+                           (run-shell-command "nitrogen --restore")
+                           (sb-thread:return-from-thread 0))))
 
 (defvar *is-laptop* (string= "Ness-net"
                              (string-trim '(#\Newline) (run-shell-command "hostname" t))))
@@ -17,6 +19,12 @@
 
 (defun v/load (filename)
   (load (concat *config-path* filename ".lisp")))
+
+(defun play-startup-sound ()
+  (sb-thread:make-thread (lambda ()
+                           (run-shell-command (concat "ffplay -autoexit -nodisp " *config-path* "media/start.wav")))))
+
+(add-hook *start-hook* #'play-startup-sound)
 
 ;;; Fixes
 (defun ratio-or-pixel (length ratio)
