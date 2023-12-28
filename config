@@ -4,14 +4,7 @@
 (in-package :stumpwm)
 (setf *default-package* :stumpwm)
 
-;;; Startup Commands
-(when *initializing*
-  (sb-thread:make-thread (lambda ()
-                           (run-shell-command "xsetroot -cursor_name left_ptr")
-                           (run-shell-command "setxkbmap -option caps:ctrl_modifier")
-                           (run-shell-command "nitrogen --restore")
-                           (sb-thread:return-from-thread 0))))
-
+;;; Setup
 (defvar *is-laptop* (string= "Ness-net"
                              (string-trim '(#\Newline) (run-shell-command "hostname" t))))
 
@@ -20,11 +13,15 @@
 (defun v/load (filename)
   (load (concat *config-path* filename ".lisp")))
 
-(defun play-startup-sound ()
+(defun startup-shell-commands ()
   (sb-thread:make-thread (lambda ()
-                           (run-shell-command (concat "ffplay -autoexit -nodisp " *config-path* "media/start.wav")))))
+                           (run-shell-command "xsetroot -cursor_name left_ptr")
+                           (run-shell-command "setxkbmap -option caps:ctrl_modifier")
+                           (run-shell-command "nitrogen --restore")
+                           (run-shell-command (concat "ffplay -autoexit -nodisp " *config-path* "media/start.wav"))
+                           (sb-thread:return-from-thread 0))))
 
-(add-hook *start-hook* #'play-startup-sound)
+(add-hook *start-hook* #'startup-shell-commands)
 
 ;;; Fixes
 (defun ratio-or-pixel (length ratio)
@@ -34,7 +31,9 @@ If ratio is an integer return the number of pixel desired."
       ratio
       (round (* length ratio)))) ; fixing this line
 
-(v/load "modeline")
+;; Use multithreaded modeline on low spec systems
+(when *is-laptop*
+  (v/load "modeline"))
 
 ;;; Theme
 (defparameter color-gold "#baa67f")
@@ -98,7 +97,6 @@ If ratio is an integer return the number of pixel desired."
       wifi:*wifi-modeline-fmt* "wifi: %p")
 
 ;;; Main Settings
-
 (setf *mode-line-background-color* *mode-line-bg-color*
       *mode-line-border-color* *mode-line-bg-color*
       *mode-line-foreground-color* *mode-line-fg-color*
@@ -139,7 +137,6 @@ If ratio is an integer return the number of pixel desired."
       *mode-line-highlight-template* "[^(:fg \"#a566af\")~A^n]")
 
 ;;; Groups
-
 (defparameter *group-names* (vector "one" "two" "three" "four" "five"))
 
 (when *initializing*
@@ -161,11 +158,9 @@ If ratio is an integer return the number of pixel desired."
 (defvar *slynk-started* nil)
 
 ;;; Commands
-
 (v/load "commands")
 
 ;;; Modeline Settings
-
 (let ((separator " ^(:fg \"#626262\");^n "))
   (setf *time-modeline-string* "%a %d de %b, %H:%M"
         *screen-mode-line-format* (list
@@ -219,7 +214,6 @@ If ratio is an integer return the number of pixel desired."
 (enable-mode-line-everywhere)
 
 ;;; Hooks
-
 (defparameter *floating-classes* '("Sxiv" "mpv"))
 
 (defun float-if-match (window)
@@ -236,7 +230,6 @@ If ratio is an integer return the number of pixel desired."
 (add-hook *new-window-hook* #'float-if-match)
 
 ;;; Key mappings
-
 (defparameter *script-manager* "scriptctl")
 
 (defun make-script (exec &optional name arg)
@@ -245,8 +238,9 @@ If exec is non-nil, the shell command will be run from this function, else it wi
   (let ((cmd (concatenate 'string *script-manager* " " name " " arg)))
     (if exec
         (run-shell-command cmd)
-        (concatenate 'string "run-shell-command " cmd))))
+        (concat "run-shell-command " cmd))))
 
 (v/load "keys")
 
+;;; End
 (setf *startup-message* "¡^2StumpWM^n está listo!")
