@@ -226,8 +226,9 @@ If ratio is an integer return the number of pixel desired."
 (add-hook *new-window-hook* #'float-if-match)
 
 (defun sly-stop-server-sync ()
-  (slynk:stop-server *slynk-port*)
-  (setf *slynk-started* nil))
+  (when *slynk-started*
+    (slynk:stop-server *slynk-port*)
+    (setf *slynk-started* nil)))
 
 (add-hook *restart-hook* #'sly-stop-server-sync)
 (add-hook *quit-hook* #'sly-stop-server-sync)
