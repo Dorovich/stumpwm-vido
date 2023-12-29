@@ -5,15 +5,21 @@
 (setf *default-package* :stumpwm)
 
 ;;; Setup
-(defvar *is-laptop* (string= "Ness-net"
-                             (string-trim '(#\Newline) (run-shell-command "hostname" t))))
+(defvar *is-laptop* (string= "Ness-net" (string-trim '(#\Newline) (run-shell-command "hostname" t)))
+  "Whether StumpWM is running on my laptop or a similar device.")
 
-(defvar *config-path* (uiop:native-namestring "~/.config/stumpwm/"))
+(defvar *config-path* (uiop:native-namestring "~/.config/stumpwm/")
+  "Where the user configuration files are located.")
 
 (defun v/load (filename)
-  (load (concat *config-path* filename ".lisp")))
+  "Load @arg{filename} (without extension) from the `*config-path*'."
+  (let ((file (concat *config-path* filename ".lisp")))
+    (if (probe-file file)
+        (load file)
+      (message (format nil "File ~A not found!") file))))
 
 (defun startup-shell-commands ()
+  "Shell commands to run once when StumpWM starts."
   (sb-thread:make-thread (lambda ()
                            (run-shell-command "xsetroot -cursor_name left_ptr")
                            (run-shell-command "setxkbmap -option caps:ctrl_modifier")
