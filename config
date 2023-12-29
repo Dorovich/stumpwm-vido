@@ -131,11 +131,6 @@ If ratio is an integer return the number of pixel desired."
 (setf *run-or-raise-all-groups* nil)
 (setf *startup-message* nil)
 
-(setf *window-format* "(%n) %c"
-      *group-format* "%n%s %t"
-      *hidden-window-color* "^**"
-      *mode-line-highlight-template* "[^(:fg \"#a566af\")~A^n]")
-
 ;;; Groups
 (defparameter *group-names* (vector "one" "two" "three" "four" "five"))
 
@@ -151,7 +146,6 @@ If ratio is an integer return the number of pixel desired."
 ;;   https://www.kaashif.co.uk/2015/06/28/hacking-stumpwm-with-common-lisp/
 ;; con sly:
 ;;   https://www.reddit.com/r/stumpwm/comments/ouuh1c/how_to_connect_sly_to_stumpwm_to_modifying_it_in/
-
 (require :slynk)
 
 (defvar *slynk-port* 4004)
@@ -162,7 +156,11 @@ If ratio is an integer return the number of pixel desired."
 
 ;;; Modeline Settings
 (let ((separator " ^(:fg \"#626262\");^n "))
-  (setf *time-modeline-string* "%a %d de %b, %H:%M"
+  (setf *window-format* "%n:%c"
+        *group-format* "%n%s:%t"
+        *hidden-window-color* "^**" ; "^(:fg \"#8e8e8e\")"
+        *mode-line-highlight-template* "[^(:fg \"#a566af\")~A^n]"
+        *time-modeline-string* "%a %d de %b, %H:%M"
         *screen-mode-line-format* (list
                                    ;; Groups
                                    "group: "
@@ -174,7 +172,7 @@ If ratio is an integer return the number of pixel desired."
                                    "^>"
                                    ;; Battery
                                    (when *is-laptop*
-                                     (concatenate 'string "bat: %B" separator)) 
+                                     (concatenate 'string "bat: %B" separator))
                                    ;; Network
                                    "net: "
                                    '(:eval

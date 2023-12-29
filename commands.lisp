@@ -80,7 +80,6 @@
                            (run-or-raise "emacsclient -a 'emacs' -c" '(:class "Emacs") t nil)
                            (run-shell-command "emacsclient -e '(dired nil)'"))))
 
-
 (defcommand file-manager () ()
   "Start PCManFM or switch to it, if it is already running on the current group (any screen)."
   (sb-thread:make-thread (lambda ()
