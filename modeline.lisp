@@ -6,7 +6,7 @@
 (defparameter *mode-line-requests-lock* (sb-thread:make-mutex)
   "Lock to access the requests list atomically.")
 
-(defvar *mode-line-async-update* t
+(defvar *mode-line-async-update* nil
   "If non-nil, the the modeline is updated and redrawn asynchronously with a different thread.")
 
 (defvar *mode-line-requests* nil
@@ -20,22 +20,29 @@
              (sb-thread:with-mutex (*mode-line-requests-lock*)
                (setf s (car *mode-line-requests*))
                (setf *mode-line-requests* (cdr *mode-line-requests*)))
+             (when (null s) (sb-ext:exit))
              (if (eq s -1)
                  (mapc 'redraw-mode-line *mode-lines*)
                  (dolist (mode-line (screen-mode-lines s))
-                   (redraw-mode-line mode-line))))))
-  (sb-thread:return-from-thread 0))
+                   (redraw-mode-line mode-line)))))))
 
-(defparameter *mode-line-thread* (sb-thread:make-thread #'update-modelines-loop))
+(defparameter *mode-line-thread* nil)
 
 (defun update-mode-lines (screen)
   "Update all mode lines on SCREEN"
-  (sb-thread:with-mutex (*mode-line-requests-lock*)
-    (setf *mode-line-requests* (append *mode-line-requests* (cons screen nil))))
-  (sb-thread:signal-semaphore *mode-line-semaphore* 1))
+  (if *mode-line-async-update*
+      (progn
+        (sb-thread:with-mutex (*mode-line-requests-lock*)
+          (setf *mode-line-requests* (append *mode-line-requests* (cons screen nil))))
+        (sb-thread:signal-semaphore *mode-line-semaphore* 1))
+      (dolist (mode-line (screen-mode-lines screen))
+        (redraw-mode-line mode-line))))
 
 (defun update-all-mode-lines ()
   "Update all mode lines."
-  (sb-thread:with-mutex (*mode-line-requests-lock*)
-    (setf *mode-line-requests* (append *mode-line-requests* (cons -1 nil))))
-  (sb-thread:signal-semaphore *mode-line-semaphore* 1))
+  (if *mode-line-async-update*
+      (progn
+        (sb-thread:with-mutex (*mode-line-requests-lock*)
+          (setf *mode-line-requests* (append *mode-line-requests* (cons -1 nil))))
+        (sb-thread:signal-semaphore *mode-line-semaphore* 1))
+      (mapc 'redraw-mode-line *mode-lines*)))
