@@ -57,7 +57,7 @@
   (sb-thread:make-thread (lambda ()
                            (run-shell-command (if program
                                                   (format nil "st ~A" program)
-                                                  "st")))))
+                                                "st")))))
 
 (defcommand chromium () ()
   "Start Ungoogled Chromium or switch to it, if it is already running on any group."
@@ -140,3 +140,15 @@
     (setf *mode-line-async-update* nil)
     (sb-thread:signal-semaphore *mode-line-semaphore* 1)
     (sb-thread:join-thread *mode-line-thread*)))
+
+(define-stumpwm-type :shell-with-prompt (input prompt)
+  (let ((*input-history* *input-shell-history*))
+    (unwind-protect
+         (or (argument-pop-rest input)
+             (completing-read (current-screen) prompt 'complete-program))
+      (setf *input-shell-history* *input-history*))))
+
+(defcommand launch (cmd) ((:shell-with-prompt "run: " "run: "))
+  "Run the specified command in a shell asynchronously."
+  (sb-thread:make-thread (lambda ()
+                           (run-prog *shell-program* :args (list "-c" cmd) :wait nil))))
