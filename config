@@ -228,7 +228,8 @@ If ratio is an integer return the number of pixel desired."
       (float-window-move-resize window :width w :height h :x x :y y))
     (group-focus-window (current-group) window)))
 
-(add-hook *new-window-hook* #'float-if-match)
+(unless *is-laptop*
+  (add-hook *new-window-hook* #'float-if-match))
 
 (defun sly-stop-server-sync ()
   (when *slynk-started*
