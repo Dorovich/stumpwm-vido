@@ -77,7 +77,9 @@
 (define-key *top-map* (kbd "s-e") "emacsclient")
 (define-key *top-map* (kbd "s-a") "file-manager")
 (define-key *top-map* (kbd "s-m") "music-player")
-(define-key *top-map* (kbd "s-d") "run-shell-command dmenu_run -h 12 -c -g 3 -l 10")
+(define-key *top-map* (kbd "s-d") (if *is-laptop*
+                                      "launch"
+                                      "run-shell-command dmenu_run -h 12 -c -g 3 -l 10"))
 
 ;; Scripts
 (define-key *top-map* (kbd "s-Print") "screenshot")
