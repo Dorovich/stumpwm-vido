@@ -221,8 +221,8 @@ If ratio is an integer return the number of pixel desired."
   "Makes a new window floating if its class matches."
   (when (member (window-class window) *floating-classes* :test #'string=)
     (float-window window (current-group))
-    (let* ((w (* (screen-width (current-screen)) 55/96))
-           (h (* (screen-height (current-screen)) 5/6))
+    (let* ((w (round (* (screen-width (current-screen)) 55/96)))
+           (h (round (* (screen-height (current-screen)) 5/6)))
            (x (round (- (/ (screen-width (current-screen)) 2) (/ w 2))))
            (y (round (- (/ (screen-height (current-screen)) 2) (/ h 2)))))
       (float-window-move-resize window :width w :height h :x x :y y))
