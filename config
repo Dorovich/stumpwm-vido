@@ -12,11 +12,18 @@
   "Where the user configuration files are located.")
 
 (defun v/load (filename)
-  "Load @arg{filename} (without extension) from the `*config-path*'."
-  (let ((file (concat *config-path* filename ".lisp")))
-    (if (probe-file file)
-        (load file)
-      (message (format nil "File ~A not found!") file))))
+  "Load @arg{filename} (without extension) from the `*config-path*'. Compiled files are preferred."
+  (let ((file-comp (concat *config-path* filename ".fasl"))
+        (file (concat *config-path* filename ".lisp")))
+    (cond
+      ((probe-file file-comp) (load file-comp))
+      ((probe-file file) (load file))
+      (t (message (format nil "File ~A not found!" filename))))))
+
+(defmacro v/compile (filename)
+  "Compile a file from the `*config-path*'. Meant to be used from the REPL."
+  `(compile-file
+    (concat *config-path* ,(string-downcase (write-to-string filename)) ".lisp")))
 
 (defun startup-shell-commands ()
   "Shell commands to run once when StumpWM starts."
@@ -78,12 +85,11 @@ If ratio is an integer return the number of pixel desired."
 
 ;; Truetype fonts
 ;; (load-module "ttf-fonts")
-;; (clx-truetype:cache-fonts)
+;; (xft:cache-fonts)
 ;; (set-font (make-instance 'xft:font
 ;;                          :family "Roboto Mono"
 ;;                          :subfamily "Regular"
-;;                          :size 16
-;;                          :antialias t))
+;;                          :size 16))
 ;; ...Or normal fonts
 (set-font (if *is-laptop*
               "-*-fixed-*-r-normal-*-13-120-*-*-*-*-iso8859-*"

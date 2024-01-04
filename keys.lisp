@@ -48,6 +48,7 @@
              (kbd "s") "vsplit-and-focus"
              (kbd "v") "hsplit-and-focus"
              (kbd "o") "only"
+             (kbd "i") "iresize"
              (kbd "r") "remove")
 (define-key *top-map* (kbd "s-s") *window-split-map*)
 
