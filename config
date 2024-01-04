@@ -43,7 +43,7 @@ If ratio is an integer return the number of pixel desired."
       ratio
       (round (* length ratio)))) ; fixing this line
 
-(v/load "modeline")
+(v/load "modeline-v2")
 
 ;;; Theme
 (defparameter color-gold "#baa67f")
