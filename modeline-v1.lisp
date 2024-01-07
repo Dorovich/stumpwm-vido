@@ -46,3 +46,18 @@
           (setf *mode-line-requests* (append *mode-line-requests* (cons -1 nil))))
         (sb-thread:signal-semaphore *mode-line-semaphore* 1))
       (mapc 'redraw-mode-line *mode-lines*)))
+
+;;; Commands
+
+(defcommand toggle-mode-line-async-on () ()
+  "Turn on the multithreaded mode-line."
+  (unless *mode-line-async-update*
+    (setf *mode-line-async-update* t)
+    (setf *mode-line-thread* (sb-thread:make-thread #'update-modelines-loop))))
+
+(defcommand toggle-mode-line-async-off () ()
+  "Turn off the multithreaded mode-line."
+  (when *mode-line-async-update*
+    (setf *mode-line-async-update* nil)
+    (sb-thread:signal-semaphore *mode-line-semaphore* 1)
+    (sb-thread:join-thread *mode-line-thread*)))

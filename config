@@ -237,13 +237,13 @@ If ratio is an integer return the number of pixel desired."
 (unless *is-laptop*
   (add-hook *new-window-hook* #'float-if-match))
 
-(defun sly-stop-server-sync ()
+(defun sly-stop-server-now ()
   (when *slynk-started*
     (slynk:stop-server *slynk-port*)
     (setf *slynk-started* nil)))
 
-(add-hook *restart-hook* #'sly-stop-server-sync)
-(add-hook *quit-hook* #'sly-stop-server-sync)
+(add-hook *restart-hook* #'sly-stop-server-now)
+(add-hook *quit-hook* #'sly-stop-server-now)
 
 ;;; Key mappings
 (defparameter *script-manager* "scriptctl")
