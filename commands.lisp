@@ -39,7 +39,9 @@
     (fullscreen)))
 
 (defcommand hdmi-side () ()
-  (run-shell-command "xrandr --output HDMI-A-0 --auto --right-of DP-0")
+  (run-shell-command (concat "xrandr --output "
+                             (if *is-laptop* "HDMI-A-0" "HDMI-0")
+                             " --auto --left-of DP-0"))
   (run-shell-command "nitrogen --restore")
   (enable-mode-line-everywhere))
 
@@ -60,9 +62,14 @@
                                                 "st")))))
 
 (defcommand chromium () ()
-  "Start Ungoogled Chromium or switch to it, if it is already running on any group."
+  "Start Chromium or switch to it, if it is already running on any group."
   (sb-thread:make-thread (lambda ()
-                           (run-or-raise "ungoogled-chromium" '(:class "Chromium-browser") t nil))))
+                           (run-or-raise "chromium-browser" '(:class "Chromium-browser") t nil))))
+
+;; (defcommand chromium () ()
+;;   "Start Ungoogled Chromium or switch to it, if it is already running on any group."
+;;   (sb-thread:make-thread (lambda ()
+;;                            (run-or-raise "ungoogled-chromium" '(:class "Chromium-browser") t nil))))
 
 (defcommand firefox () ()
   "Start Firefox or switch to it, if it is already running on any group."

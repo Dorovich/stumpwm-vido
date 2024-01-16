@@ -99,5 +99,6 @@
              (kbd "s") (make-script nil "scrot")
              (kbd "k") (make-script nil "kill")
              (kbd "l") (make-script nil "steamapp")
+             (kbd "i") (make-script nil "snippet load")
              (kbd "q") (make-script nil "quit"))
 (define-key *top-map* (kbd "s-r") *scripts-map*)
